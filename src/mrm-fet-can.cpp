@@ -7,7 +7,8 @@
 @param hardwareSerial - Serial, Serial1, Serial2,... - an optional serial port, for example for Bluetooth communication
 @param maxNumberOfBoards - maximum number of boards
 */
-Mrm_fet_can::Mrm_fet_can(Robot* robot, uint8_t maxNumberOfBoards) : SensorBoard(robot, 1, "FET", maxNumberOfBoards, ID_MRM_FET_CAN) {
+Mrm_fet_can::Mrm_fet_can(Robot* robot, uint8_t maxNumberOfBoards) : 
+	MotorBoard(robot, 1, "FET", maxNumberOfBoards, ID_MRM_FET_CAN) {
 }
 
 Mrm_fet_can::~Mrm_fet_can()
@@ -57,7 +58,7 @@ void Mrm_fet_can::add(char * deviceName)
 		strcpy(errorMessage, "Too many mrm-fet-can\n\r");
 		return;
 	}
-	SensorBoard::add(deviceName, canIn, canOut);
+	MotorBoard::add(deviceName, canIn, canOut);
 }
 
 /** Turn output on
@@ -101,7 +102,7 @@ bool Mrm_fet_can::messageDecode(uint32_t canId, uint8_t data[8]){
 			if (!messageDecodeCommon(canId, data, deviceNumber)) {
 				switch (data[0]) {
 				default:
-					print("Unknown command. ");
+					robotContainer->print("Unknown command. ");
 					messagePrint(canId, 8, data, false);
 					errorCode = 205;
 					errorInDeviceNumber = deviceNumber;
@@ -131,7 +132,7 @@ void Mrm_fet_can::test()
 				else
 					turnOff(fet);
 
-				print(isOn ? "On %i\n\r" : "Off %i\n\r", fet);
+				robotContainer->print(isOn ? "On %i\n\r" : "Off %i\n\r", fet);
 				if (!isOn)
 					fet = 1 - fet;
 			}
